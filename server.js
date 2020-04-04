@@ -4,6 +4,10 @@ const passport = require('passport')
 const session = require("express-session");
 const uid = require('uid-safe');
 const bodyParser = require("body-parser");
+const redis = require('redis')
+ 
+const RedisStore = require('connect-redis')(session)
+const redisClient = redis.createClient()
 
 const dev = process.env.NODE_ENV !== 'production';
 const app = next({ dev });
@@ -14,7 +18,8 @@ app.prepare().then(() => {
   const server = express();
 
   const sessionConfig = {
-    secret: uid.sync(18),
+    store: new RedisStore({ client: redisClient }),
+    secret: "static session key that is persisting",
     cookie: {
       maxAge: 86400 * 1000
     },
@@ -35,6 +40,7 @@ app.prepare().then(() => {
   server.use('/auth', require('./api/auth'))
 
   server.get('/', (req, res, next) => {
+    console.log(req.session)
     if(!req.isAuthenticated()) return res.redirect('/login')
     next();
   });
