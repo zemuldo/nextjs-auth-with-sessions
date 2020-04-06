@@ -6,11 +6,9 @@ const router = express()
 
 const users = [{ name: "Test User", password: "password", user_name: "zemuldo" }]
 
-const validateUser = (username, password, done) => {
-    console.log("doing")
-    const user = users.find(u => u.user_name == username)
+const validateUser = async (username, password, done) => {
+    const user = await  users.find(u => u.user_name == username)
     if (!user) { return done(null, false); }
-    if (!user.password === password) { return done(null, false); }
     return done(null, user);
 }
 

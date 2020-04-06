@@ -1,18 +1,26 @@
 import Head from 'next/head'
 import axios from 'axios'
 
-const Home = () => (
-    <div>
-        <p>Login Here</p>
-        <form onSubmit = {() => axios.post('/auth/login', {username: "zemuldo", password: "password"}).then(()=>{
-            window.location = '/'
-        })
-    }>
-            <input />
-            <input />
-            <button type='submit'>Login</button>
-        </form>
-    </div>
-)
+class Home extends React.Component {
+    call_api = (e) => {
+        e.preventDefault()
+        axios.post('/auth/login', { username: "zemuldo", password: "password" })
+            .then((data) => {
+                console.log(data.data)
+                window.location = '/'
+            })
+            .catch(err => console.log(err))
+    }
+    render() {
+        return (<div>
+            <form>
+                <p>Login Here</p>
+                <input />
+                <input />
+                <button onClick={this.call_api}>Login</button>
+            </form>
+        </div>)
+    }
+}
 
 export default Home
